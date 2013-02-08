@@ -1,10 +1,9 @@
 package com.runecore.env;
 
-import java.net.InetSocketAddress;
 import java.util.logging.Logger;
 
 import com.runecore.codec.ProtocolCodec;
-import com.runecore.network.NetworkContext;
+import com.runecore.env.groovy.GroovyEngine;
 
 /**
  * Context.java
@@ -24,6 +23,11 @@ public class Context {
     private ProtocolCodec codec;
     
     /**
+     * 
+     */
+    private GroovyEngine groovyEngine;
+    
+    /**
      * Construct the Context instance
      * @param protocol The ProtocolCodec the context is set to use
      */
@@ -36,11 +40,10 @@ public class Context {
     /**
      * Configure the Context
      */
-    public void configure() {
+    public void configure() throws Exception {
 	LOGGER.info("Configuring context with codec "+getCodec().getClass().getName());
-	NetworkContext context = new NetworkContext(new InetSocketAddress("0.0.0.0", 43594));
-	context.configure(this);
-	context.bind();
+	setGroovyEngine(new GroovyEngine());
+	getGroovyEngine().init(this);
     }
     
     public static Context get() {
@@ -57,6 +60,14 @@ public class Context {
 
     public void setCodec(ProtocolCodec codec) {
 	this.codec = codec;
+    }
+    
+    public GroovyEngine getGroovyEngine() {
+	return groovyEngine;
+    }
+
+    public void setGroovyEngine(GroovyEngine groovyEngine) {
+	this.groovyEngine = groovyEngine;
     }
 
 }

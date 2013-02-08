@@ -18,7 +18,7 @@ public class Application {
      * Invoked on execution of the Application
      * @param args The arguments for the application
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 	LOGGER.info("Starting RuneCore v4...");
 	Context.set(new Context(new Protocol614()));
 	Context.get().configure();
