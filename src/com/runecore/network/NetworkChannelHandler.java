@@ -17,12 +17,12 @@ public class NetworkChannelHandler extends SimpleChannelHandler {
     
     @Override
     public final void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-	LOGGER.info("New connection from "+e.getChannel().getRemoteAddress().toString());
+	
     }
     
     @Override
     public final void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-	LOGGER.info("Channel ("+e.getChannel().getRemoteAddress().toString()+") closed");
+	
     }
     
 }

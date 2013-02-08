@@ -23,7 +23,7 @@ public class Context {
     private ProtocolCodec codec;
     
     /**
-     * 
+     * The instance of the GroovyEngine
      */
     private GroovyEngine groovyEngine;
     

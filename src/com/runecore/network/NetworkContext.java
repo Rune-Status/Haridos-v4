@@ -42,7 +42,6 @@ public class NetworkContext {
      */
     public void configure(Context context) {
 	ChannelPipeline pipeline = new DefaultChannelPipeline();
-	pipeline.addLast("handler", new NetworkChannelHandler());
 	context.getCodec().setup(pipeline);
 	bootstrap = new ServerBootstrap();
 	Executor e = Executors.newCachedThreadPool();
