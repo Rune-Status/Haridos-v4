@@ -1,10 +1,13 @@
 package com.runecore.codec.codec614.net;
 
+import java.util.concurrent.ExecutorService;
+
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.runecore.codec.codec614.js5.AuthenticationPacket;
+import com.runecore.codec.codec614.js5.JS5Request;
 import com.runecore.network.io.MessageBuilder;
 
 /**
@@ -13,6 +16,12 @@ import com.runecore.network.io.MessageBuilder;
  * Feb 8, 2013
  */
 public class EventHandler extends SimpleChannelHandler {
+    
+    private final ExecutorService service;
+    
+    public EventHandler(ExecutorService service) {
+	this.service = service;
+    }
     
     @Override
     public final void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
@@ -25,6 +34,8 @@ public class EventHandler extends SimpleChannelHandler {
 		builder.writeByte(0);
 	    }
 	    ctx.getChannel().write(builder.toMessage());
+	} else if(e.getMessage() instanceof JS5Request) {
+	    service.submit((JS5Request)e.getMessage());
 	}
     }
 

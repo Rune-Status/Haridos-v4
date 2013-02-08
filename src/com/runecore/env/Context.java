@@ -42,6 +42,7 @@ public class Context {
      */
     public void configure() throws Exception {
 	LOGGER.info("Configuring context with codec "+getCodec().getClass().getName());
+	getCodec().init(this);
 	setGroovyEngine(new GroovyEngine());
 	getGroovyEngine().init(this);
     }

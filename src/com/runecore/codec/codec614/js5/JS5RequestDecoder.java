@@ -5,9 +5,6 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
-import com.runecore.cache.Cache;
-import com.runecore.network.io.Message;
-
 /**
  * JS5RequestDecoder.java
  * @author Harry Andreas<harry@runecore.org>
@@ -25,12 +22,8 @@ public class JS5RequestDecoder extends FrameDecoder {
 	    int container = buf.readByte() & 0xFF;
 	    int file = buf.readShort() & 0xFFFF;
 	    if(priority == 0 || priority == 1) {
-		Message response = Cache.INSTANCE.generateFile(container, file, priority);
-		if(response != null) {
-		    chan.write(response);
-		}
+		return new JS5Request(chan, priority, container, file);
 	    }
-	    System.out.println("Request[prio="+priority+",container="+container+",file="+file+"]");
 	}
 	return null;
     }

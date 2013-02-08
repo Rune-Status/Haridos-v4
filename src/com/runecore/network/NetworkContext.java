@@ -5,8 +5,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.DefaultChannelPipeline;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import com.runecore.env.Context;
@@ -41,12 +39,11 @@ public class NetworkContext {
      * @param context The context to configure for
      */
     public void configure(Context context) {
-	ChannelPipeline pipeline = new DefaultChannelPipeline();
-	context.getCodec().setup(pipeline);
 	bootstrap = new ServerBootstrap();
 	Executor e = Executors.newCachedThreadPool();
+	bootstrap.setOption("child.tcpNoDelay", true);
 	bootstrap.setFactory(new NioServerSocketChannelFactory(e, e));
-	bootstrap.setPipelineFactory(new NetworkPipelineFactory(pipeline));
+	bootstrap.setPipelineFactory(new NetworkPipelineFactory(context.getCodec()));
     }
     
     /**

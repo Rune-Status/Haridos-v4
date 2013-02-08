@@ -2,6 +2,8 @@ package com.runecore.codec;
 
 import org.jboss.netty.channel.ChannelPipeline;
 
+import com.runecore.env.Context;
+
 /**
  * ProtocolCodec.java
  * @author Harry Andreas<harry@runecore.org>
@@ -9,6 +11,7 @@ import org.jboss.netty.channel.ChannelPipeline;
  */
 public interface ProtocolCodec {
     
+    public void init(Context context);
     public void setup(ChannelPipeline pipeline);
 
 }

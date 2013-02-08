@@ -27,6 +27,8 @@ public class HandshakeDecoder extends FrameDecoder {
 	    int version = buffer.readInt();
 	    ctx.getPipeline().addBefore("encoder", "decoder", new JS5RequestDecoder());
 	    return new AuthenticationPacket(version);
+	} else {
+	    System.out.println("Service: "+service);
 	}
 	return null;
     }
