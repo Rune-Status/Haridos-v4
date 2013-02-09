@@ -1,11 +1,13 @@
 package com.runecore.codec.codec614.net;
 
+import java.security.SecureRandom;
 import java.util.concurrent.ExecutorService;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
+import com.runecore.codec.codec614.auth.LoginKeyRequest;
 import com.runecore.codec.codec614.js5.AuthenticationPacket;
 import com.runecore.codec.codec614.js5.JS5Request;
 import com.runecore.network.io.MessageBuilder;
@@ -36,6 +38,11 @@ public class EventHandler extends SimpleChannelHandler {
 	    ctx.getChannel().write(builder.toMessage());
 	} else if(e.getMessage() instanceof JS5Request) {
 	    service.submit((JS5Request)e.getMessage());
+	} else if(e.getMessage() instanceof LoginKeyRequest) {
+	    MessageBuilder builder = new MessageBuilder();
+	    builder.writeByte(0);
+	    builder.writeLong(new SecureRandom().nextLong());
+	    ctx.getChannel().write(builder.toMessage());
 	}
     }
 
