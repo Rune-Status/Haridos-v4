@@ -27,18 +27,35 @@ public class GroovyEngine {
      */
     private final Map<String, Class<?>> scripts = new HashMap<String, Class<?>>();
     
+    public GroovyEngine() {
+	try {
+	    engine = new GroovyScriptEngine(new String[] { "./data/scripts/", "./data/scripts/614/"});
+	    ImportCustomizer imports = new ImportCustomizer();
+	    imports.addImport("Player", "com.runecore.env.model.player.Player");
+	    imports.addImport("GameSession", "com.runecore.network.GameSession");
+	    imports.addImport("MessageBuilder","com.runecore.network.io.MessageBuilder");
+	    imports.addImport("PacketType", "com.runecore.network.io.Message.PacketType");
+	    imports.addImport("SendMessageEvent", "com.runecore.codec.event.SendMessageEvent");
+	    imports.addImport("SendInterfaceEvent", "com.runecore.codec.event.SendInterfaceEvent");
+	    imports.addImport("SendWindowPaneEvent", "com.runecore.codec.event.SendWindowPaneEvent");
+	    imports.addImport("ActionSender", "com.runecore.codec.ActionSender");
+	    imports.addImport("GroovyScript", "com.runecore.env.groovy.GroovyScript");
+	    imports.addImport("Context", "com.runecore.env.Context");
+	    imports.addImport("NetworkContext", "com.runecore.network.NetworkContext");
+	    engine.getConfig().addCompilationCustomizers(imports);
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+    
     /**
      * Starts the Engine
      * @param context
      */
     public void init(Context context) throws Exception {
-	engine = new GroovyScriptEngine(new String[] { "./data/scripts/" });
-	ImportCustomizer imports = new ImportCustomizer();
-	imports.addImport("GroovyScript", "com.runecore.env.groovy.GroovyScript");
-	imports.addImport("Context", "com.runecore.env.Context");
-	imports.addImport("NetworkContext", "com.runecore.network.NetworkContext");
-	engine.getConfig().addCompilationCustomizers(imports);
 	for(File f : new File("./data/scripts/").listFiles()) {
+	    if(f.isDirectory())
+		continue;
 	    String scriptName = f.getName().replaceAll(".groovy", "");
 	    GroovyScript script = initScript(scriptName);
 	    script.init(context);

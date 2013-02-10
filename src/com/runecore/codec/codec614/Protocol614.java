@@ -10,6 +10,7 @@ import com.runecore.codec.ProtocolCodec;
 import com.runecore.codec.codec614.net.EventHandler;
 import com.runecore.codec.codec614.net.HandshakeDecoder;
 import com.runecore.env.Context;
+import com.runecore.env.groovy.GroovyScript;
 import com.runecore.network.NetworkEncoder;
 
 /**
@@ -23,6 +24,8 @@ public class Protocol614 implements ProtocolCodec {
     
     public void init(Context context) {
 	Cache.init();
+	GroovyScript script = context.getGroovyEngine().initScript("ActionSender");
+	script.init(context);
 	js5Service = Executors.newFixedThreadPool(5);
     }
     

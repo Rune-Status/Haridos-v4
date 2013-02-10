@@ -40,6 +40,11 @@ public class MessageBuilder {
 	this.opcode = opcode;
 	this.type = type;
     }
+    
+    public MessageBuilder writeBytes(MessageBuilder b) {
+	this.buffer.writeBytes(b.buffer);
+	return this;
+    }
 
     public MessageBuilder writeByte(byte b) {
 	buffer.writeByte(b);
@@ -70,7 +75,7 @@ public class MessageBuilder {
 	return this;
     }
 
-    public MessageBuilder writeRS2String(String string) {
+    public MessageBuilder writeString(String string) {
 	buffer.writeBytes(string.getBytes());
 	buffer.writeByte((byte) 0);
 	return this;
@@ -137,6 +142,11 @@ public class MessageBuilder {
     }
 
     public MessageBuilder writeByteC(int val) {
+	writeByte((byte) (-val));
+	return this;
+    }
+    
+    public MessageBuilder writeZ(int val) {
 	writeByte((byte) (-val));
 	return this;
     }

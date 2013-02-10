@@ -2,6 +2,7 @@ package com.runecore.env;
 
 import java.util.logging.Logger;
 
+import com.runecore.codec.ActionSender;
 import com.runecore.codec.ProtocolCodec;
 import com.runecore.env.groovy.GroovyEngine;
 import com.runecore.env.login.LoginProcessor;
@@ -34,6 +35,11 @@ public class Context {
     private LoginProcessor loginProcessor;
     
     /**
+     * The instance of the ActionSender
+     */
+    private ActionSender actionSender;
+    
+    /**
      * Construct the Context instance
      * @param protocol The ProtocolCodec the context is set to use
      */
@@ -53,8 +59,8 @@ public class Context {
 	LOGGER.info("Configuring context with codec "+getCodec().getClass().getName());
 	setLoginProcessor(new LoginProcessor());
 	new Thread(getLoginProcessor()).start();
-	getCodec().init(this);
 	setGroovyEngine(new GroovyEngine());
+	getCodec().init(this);
 	getGroovyEngine().init(this);
     }
     
@@ -88,6 +94,14 @@ public class Context {
 
     public void setLoginProcessor(LoginProcessor loginProcessor) {
 	this.loginProcessor = loginProcessor;
+    }
+
+    public ActionSender getActionSender() {
+	return actionSender;
+    }
+
+    public void setActionSender(ActionSender actionSender) {
+	this.actionSender = actionSender;
     }
 
 }
