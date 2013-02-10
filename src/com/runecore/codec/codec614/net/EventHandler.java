@@ -10,6 +10,8 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 import com.runecore.codec.codec614.auth.LoginKeyRequest;
 import com.runecore.codec.codec614.js5.AuthenticationPacket;
 import com.runecore.codec.codec614.js5.JS5Request;
+import com.runecore.env.Context;
+import com.runecore.env.login.LoginRequest;
 import com.runecore.network.io.MessageBuilder;
 
 /**
@@ -43,6 +45,8 @@ public class EventHandler extends SimpleChannelHandler {
 	    builder.writeByte(0);
 	    builder.writeLong(new SecureRandom().nextLong());
 	    ctx.getChannel().write(builder.toMessage());
+	} else if(e.getMessage() instanceof LoginRequest) {
+	    Context.get().getLoginProcessor().queue((LoginRequest) e.getMessage());
 	}
     }
 

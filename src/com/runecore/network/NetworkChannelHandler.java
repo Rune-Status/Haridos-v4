@@ -1,7 +1,5 @@
 package com.runecore.network;
 
-import java.util.logging.Logger;
-
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
@@ -12,9 +10,7 @@ import org.jboss.netty.channel.SimpleChannelHandler;
  * Feb 8, 2013
  */
 public class NetworkChannelHandler extends SimpleChannelHandler {
-    
-    private static final Logger LOGGER = Logger.getLogger(NetworkChannelHandler.class.getName());
-    
+     
     @Override
     public final void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
 	

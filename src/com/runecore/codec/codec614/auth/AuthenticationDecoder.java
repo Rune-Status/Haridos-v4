@@ -55,7 +55,7 @@ public class AuthenticationDecoder extends ReplayingDecoder<AuthenticationStage>
 	    in.readUnsignedShort();
 	    in.readUnsignedByte();
 	    in.skipBytes(24);
-	    String macaddress = readRS2String(in);
+	    readRS2String(in); //macaddress!
 	    in.readInt();
 	    int size = in.readUnsignedByte();
 	    in.skipBytes(size);
