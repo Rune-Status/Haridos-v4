@@ -3,6 +3,7 @@ package com.runecore.codec.codec614.js5;
 import org.jboss.netty.channel.Channel;
 
 import com.runecore.cache.Cache;
+import com.runecore.cache.CacheManager;
 import com.runecore.network.io.Message;
 
 /**
@@ -34,7 +35,7 @@ public class JS5Request implements Runnable {
      */
     @Override
     public void run() {
-	Message response = Cache.INSTANCE.generateFile(container, file, priority);
+	Message response = CacheManager.generateFile(container, file, priority);
 	if(response != null) {
 	    channel.write(response);
 	}

@@ -2,6 +2,7 @@ package com.runecore.env;
 
 import java.util.logging.Logger;
 
+import com.runecore.cache.CacheConstants;
 import com.runecore.codec.ActionSender;
 import com.runecore.codec.ProtocolCodec;
 import com.runecore.env.groovy.GroovyEngine;
@@ -59,6 +60,7 @@ public class Context {
     public void configure() throws Exception {
 	LOGGER.info("Configuring context with codec "+getCodec().getClass().getName());
 	RegionData.init();
+	CacheConstants.init();
 	setLoginProcessor(new LoginProcessor());
 	new Thread(getLoginProcessor()).start();
 	setGroovyEngine(new GroovyEngine());
