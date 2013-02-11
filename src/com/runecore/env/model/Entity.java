@@ -1,6 +1,7 @@
 package com.runecore.env.model;
 
 import com.runecore.env.model.def.EntityDefinition;
+import com.runecore.env.world.Location;
 
 /**
  * Entity.java
@@ -9,6 +10,16 @@ import com.runecore.env.model.def.EntityDefinition;
  */
 public abstract class Entity {
     
+    private Location location = Location.locate(3200, 3200, 0);
+    
     public abstract EntityDefinition getDefinition();
+    
+    public Location getLocation() {
+	return location;
+    }
+    
+    public void setLocation(Location loc) {
+	this.location = loc;
+    }
 
 }

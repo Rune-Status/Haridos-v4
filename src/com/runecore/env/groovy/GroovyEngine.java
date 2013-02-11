@@ -31,6 +31,8 @@ public class GroovyEngine {
 	try {
 	    engine = new GroovyScriptEngine(new String[] { "./data/scripts/", "./data/scripts/614/"});
 	    ImportCustomizer imports = new ImportCustomizer();
+	    imports.addImport("RegionData", "com.runecore.util.RegionData");
+	    imports.addImport("Location", "com.runecore.env.world.Location");
 	    imports.addImport("Player", "com.runecore.env.model.player.Player");
 	    imports.addImport("GameSession", "com.runecore.network.GameSession");
 	    imports.addImport("MessageBuilder","com.runecore.network.io.MessageBuilder");

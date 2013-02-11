@@ -16,6 +16,7 @@ public interface ActionSender {
     public void sendInterface(SendInterfaceEvent event);
     public void sendWindowPane(SendWindowPaneEvent event);
     public void sendLoginResponse(Player player);
+    public void sendMapRegion(Player player, boolean login);
     public void refreshGameInterfaces(Player player);
 
 }
