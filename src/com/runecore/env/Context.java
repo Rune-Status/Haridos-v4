@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.runecore.cache.CacheConstants;
 import com.runecore.codec.ActionSender;
+import com.runecore.codec.PlayerUpdateCodec;
 import com.runecore.codec.ProtocolCodec;
 import com.runecore.env.groovy.GroovyEngine;
 import com.runecore.env.login.LoginProcessor;
@@ -25,6 +26,11 @@ public class Context {
      * The ProtocolCodec the context is set to use
      */
     private ProtocolCodec codec;
+    
+    /**
+     * The PlayerUpdateCodec
+     */
+    private PlayerUpdateCodec playerUpdateCodec;
     
     /**
      * The instance of the GroovyEngine
@@ -106,6 +112,14 @@ public class Context {
 
     public void setActionSender(ActionSender actionSender) {
 	this.actionSender = actionSender;
+    }
+
+    public PlayerUpdateCodec getPlayerUpdateCodec() {
+	return playerUpdateCodec;
+    }
+
+    public void setPlayerUpdateCodec(PlayerUpdateCodec playerUpdateCodec) {
+	this.playerUpdateCodec = playerUpdateCodec;
     }
 
 }

@@ -7,4 +7,4 @@ package com.runecore.codec.codec614.auth;
  */
 public enum AuthenticationStage {
 	VALIDATION, DETAILS
-  }
+}

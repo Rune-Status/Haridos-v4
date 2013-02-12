@@ -20,17 +20,26 @@ import com.runecore.network.NetworkEncoder;
  */
 public class Protocol614 implements ProtocolCodec {
     
+    /**
+     * ExecutorService for the js5 protocol
+     */
     private ExecutorService js5Service;
     
+    /**
+     * Starts inital loading, cache loading etc
+     */
     public void init(Context context) {
 	Cache.init();
-	GroovyScript script = context.getGroovyEngine().initScript("ActionSender");
-	script.init(context);
+	String[] scripts = new String[] { "ActionSender", "GPI" };
+	for(String s : scripts) {
+	    GroovyScript script = context.getGroovyEngine().initScript(s);
+	    script.init(context);
+	}
 	js5Service = Executors.newFixedThreadPool(5);
     }
     
-    /* (non-Javadoc)
-     * @see com.runecore.codec.ProtocolCodec#setup(org.jboss.netty.channel.ChannelPipeline)
+    /**
+     * Sets up the pipeline
      */
     @Override
     public void setup(ChannelPipeline pipeline) {

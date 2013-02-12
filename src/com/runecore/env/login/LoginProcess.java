@@ -1,8 +1,10 @@
 package com.runecore.env.login;
 
+import com.runecore.codec.codec614.net.GamePacketDecoder;
 import com.runecore.env.Context;
 import com.runecore.env.model.def.PlayerDefinition;
 import com.runecore.env.model.player.Player;
+import com.runecore.env.world.World;
 import com.runecore.network.GameSession;
 import com.runecore.network.io.MessageBuilder;
 
@@ -36,11 +38,13 @@ public class LoginProcess implements Runnable {
 	PlayerDefinition definition = new PlayerDefinition(request.getUser(), 3);
 	Player player = new Player(session, definition);
 	player.getSession().write(new MessageBuilder().writeByte(responseCode).toMessage());
+	if(!World.get().register(player)) {
+	    responseCode = 7;
+	}
 	if(responseCode == 2) {
-	    //do context switching in channelhandler and assign gamepacketdecoder
 	    Context c = Context.get();
-	    c.getActionSender().sendLoginResponse(player);
-	    c.getActionSender().refreshGameInterfaces(player);
+	    c.getActionSender().sendLogin(player);
+	    request.getChc().getPipeline().replace("decoder", "decoder", new GamePacketDecoder(session));
 	}
     }
 

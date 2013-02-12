@@ -53,8 +53,7 @@ public class EventHandler extends SimpleChannelHandler {
 	    builder.writeLong(new SecureRandom().nextLong());
 	    ctx.getChannel().write(builder.toMessage());
 	} else if (e.getMessage() instanceof LoginRequest) {
-	    Context.get().getLoginProcessor()
-		    .queue((LoginRequest) e.getMessage());
+	    Context.get().getLoginProcessor().queue((LoginRequest) e.getMessage());
 	}
     }
 

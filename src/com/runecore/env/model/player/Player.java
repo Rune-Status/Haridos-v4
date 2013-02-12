@@ -17,6 +17,8 @@ public class Player extends Entity {
      */
     private PlayerDefinition definition;
     private final GameSession session;
+    private final Skills skills;
+    private final Looks looks;
     
     /**
      * Construct the Player instance
@@ -27,6 +29,13 @@ public class Player extends Entity {
 	this.definition = definition;
 	this.session = session;
 	this.session.setPlayer(this);
+	this.skills = new Skills(this);
+	this.looks = new Looks();
+    }
+    
+    @Override
+    public void tick() {
+	
     }
     
     @Override
@@ -36,6 +45,14 @@ public class Player extends Entity {
     
     public GameSession getSession() {
 	return session;
+    }
+
+    public Skills getSkills() {
+	return skills;
+    }
+
+    public Looks getLooks() {
+	return looks;
     }
 
 }

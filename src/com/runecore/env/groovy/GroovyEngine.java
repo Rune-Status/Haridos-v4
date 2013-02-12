@@ -31,15 +31,24 @@ public class GroovyEngine {
 	try {
 	    engine = new GroovyScriptEngine(new String[] { "./data/scripts/", "./data/scripts/614/"});
 	    ImportCustomizer imports = new ImportCustomizer();
+	    imports.addImport("PlayerUpdateCodec", "com.runecore.codec.PlayerUpdateCodec");
+	    imports.addImport("World", "com.runecore.env.world.World");
+	    imports.addImport("LandscapeParser", "com.runecore.cache.format.LandscapeParser");
 	    imports.addImport("RegionData", "com.runecore.util.RegionData");
 	    imports.addImport("Location", "com.runecore.env.world.Location");
 	    imports.addImport("Player", "com.runecore.env.model.player.Player");
+	    imports.addImport("Skills", "com.runecore.env.model.player.Skills");
 	    imports.addImport("GameSession", "com.runecore.network.GameSession");
 	    imports.addImport("MessageBuilder","com.runecore.network.io.MessageBuilder");
 	    imports.addImport("PacketType", "com.runecore.network.io.Message.PacketType");
+	    imports.addImport("UpdateFlag", "com.runecore.env.model.flag.UpdateFlag");
+	    imports.addImport("SettingType", "com.runecore.codec.event.SendSettingEvent.SettingType");
 	    imports.addImport("SendMessageEvent", "com.runecore.codec.event.SendMessageEvent");
 	    imports.addImport("SendInterfaceEvent", "com.runecore.codec.event.SendInterfaceEvent");
 	    imports.addImport("SendWindowPaneEvent", "com.runecore.codec.event.SendWindowPaneEvent");
+	    imports.addImport("RefreshLevelEvent", "com.runecore.codec.event.RefreshLevelEvent");
+	    imports.addImport("SendSettingEvent", "com.runecore.codec.event.SendSettingEvent");
+	    imports.addImport("SendAccessMaskEvent", "com.runecore.codec.event.SendAccessMaskEvent");
 	    imports.addImport("ActionSender", "com.runecore.codec.ActionSender");
 	    imports.addImport("GroovyScript", "com.runecore.env.groovy.GroovyScript");
 	    imports.addImport("Context", "com.runecore.env.Context");
