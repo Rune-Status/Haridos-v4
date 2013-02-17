@@ -1,5 +1,7 @@
 package com.runecore.env.model.player;
 
+import com.runecore.network.io.MessageBuilder;
+
 /**
  * Looks.java
  * @author Harry Andreas<harry@runecore.org>
@@ -21,6 +23,28 @@ public class Looks {
         for (int i = 0; i < 5; i++) {
             getColour()[i] = 6;
         }
+    }
+    
+    public MessageBuilder generate(Player player) {
+	MessageBuilder builder = new MessageBuilder();
+	int hash = 0;
+	hash |= 0 & 0x1;
+	builder.writeByte(hash);
+	builder.writeByte(4);
+	builder.writeByte(0);
+	builder.writeByte(-1);
+	builder.writeShort(-1);
+	builder.writeShort(1);
+	builder.writeByte(0);
+	for(int i = 0; i < 5; i++) {
+	    builder.writeByte(getColour()[i]);
+	}
+	builder.writeShort(1426);
+	builder.writeString(player.getDefinition().getName());
+	builder.writeShort(player.getDefinition().getCombatLevel());
+	builder.writeShort(0);
+	builder.writeByte(0);
+	return builder;
     }
 
     public int[] getLook() {

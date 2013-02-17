@@ -2,6 +2,9 @@ package com.runecore.env.model.flag;
 
 import java.util.BitSet;
 
+import com.runecore.env.model.Entity;
+import com.runecore.env.world.Location;
+
 /**
  * FlagManager.java
  * @author Harry Andreas<harry@runecore.org>
@@ -10,9 +13,21 @@ import java.util.BitSet;
 public class FlagManager {
     
     /**
+     * Construct the FlagManager
+     * @param p
+     */
+    public FlagManager(Entity p) {
+	this.player = p;
+    }
+    
+    /**
      * A BitSet of Flagged UpdateFlags
      */
+    private final Entity player;
     private final BitSet bitSet = new BitSet();
+    private boolean mapRegionChanged = false;
+    private Location teleportLocation;
+    private Location lastKnownRegion;
     
     /**
      * Is the UpdateFlag flagged
@@ -28,7 +43,7 @@ public class FlagManager {
      * @return If an update is needed
      */
     public boolean updateNeeded() {
-	return !bitSet.isEmpty();
+	return !bitSet.isEmpty() || teleportUpdate() || player.getWalking().getWalkDir() != -1 || player.getWalking().getRunDir() != -1;
     }
     
     /**
@@ -44,6 +59,35 @@ public class FlagManager {
      */
     public void reset() {
 	bitSet.clear();
+	setMapRegionChanged(false);
+    }
+    
+    public Location teleportLocation() {
+	return teleportLocation;
+    }
+    
+    public boolean teleportUpdate() {
+	return teleportLocation != null;
+    }
+
+    public boolean isMapRegionChanged() {
+	return mapRegionChanged;
+    }
+
+    public void setMapRegionChanged(boolean mapRegionChanged) {
+	this.mapRegionChanged = mapRegionChanged;
+    }
+
+    public Location lastKnownRegion() {
+	return lastKnownRegion;
+    }
+
+    public void setLastKnownRegion(Location lastKnownRegion) {
+	this.lastKnownRegion = lastKnownRegion;
+    }
+
+    public Entity entity() {
+	return player;
     }
 
 }

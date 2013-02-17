@@ -3,6 +3,7 @@ package com.runecore.env.groovy;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -27,13 +28,23 @@ public class GroovyEngine {
      */
     private final Map<String, Class<?>> scripts = new HashMap<String, Class<?>>();
     
+    /**
+     * Logger instance
+     */
+    private final Logger logger = Logger.getLogger(GroovyEngine.class.getName());
+    
+    /**
+     * Construct the GroovyEngine
+     */
     public GroovyEngine() {
 	try {
-	    engine = new GroovyScriptEngine(new String[] { "./data/scripts/", "./data/scripts/614/"});
+	    engine = new GroovyScriptEngine(new String[] { "./data/scripts/", "./data/scripts/614/", "./data/scripts/614/packet/"});
 	    ImportCustomizer imports = new ImportCustomizer();
 	    imports.addImport("PlayerUpdateCodec", "com.runecore.codec.PlayerUpdateCodec");
+	    imports.addImport("PacketCodec", "com.runecore.codec.PacketCodec");
+	    imports.addImport("Walking", "com.runecore.env.model.Walking");
 	    imports.addImport("World", "com.runecore.env.world.World");
-	    imports.addImport("LandscapeParser", "com.runecore.cache.format.LandscapeParser");
+	    imports.addImport("FlagManager", "com.runecore.env.model.flag.FlagManager");
 	    imports.addImport("RegionData", "com.runecore.util.RegionData");
 	    imports.addImport("Location", "com.runecore.env.world.Location");
 	    imports.addImport("Player", "com.runecore.env.model.player.Player");
@@ -49,6 +60,7 @@ public class GroovyEngine {
 	    imports.addImport("RefreshLevelEvent", "com.runecore.codec.event.RefreshLevelEvent");
 	    imports.addImport("SendSettingEvent", "com.runecore.codec.event.SendSettingEvent");
 	    imports.addImport("SendAccessMaskEvent", "com.runecore.codec.event.SendAccessMaskEvent");
+	    imports.addImport("SendPlayerOptionEvent", "com.runecore.codec.event.SendPlayerOptionEvent");
 	    imports.addImport("ActionSender", "com.runecore.codec.ActionSender");
 	    imports.addImport("GroovyScript", "com.runecore.env.groovy.GroovyScript");
 	    imports.addImport("Context", "com.runecore.env.Context");
@@ -64,7 +76,15 @@ public class GroovyEngine {
      * @param context
      */
     public void init(Context context) throws Exception {
+	logger.info("Compiling scripts...");
 	for(File f : new File("./data/scripts/").listFiles()) {
+	    if(f.isDirectory())
+		continue;
+	    String scriptName = f.getName().replaceAll(".groovy", "");
+	    GroovyScript script = initScript(scriptName);
+	    script.init(context);
+	}
+	for(File f : new File("./data/scripts/614/packet/").listFiles()) {
 	    if(f.isDirectory())
 		continue;
 	    String scriptName = f.getName().replaceAll(".groovy", "");

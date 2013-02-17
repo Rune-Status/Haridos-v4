@@ -2,8 +2,8 @@ package com.runecore.env;
 
 import java.util.logging.Logger;
 
-import com.runecore.cache.CacheConstants;
 import com.runecore.codec.ActionSender;
+import com.runecore.codec.PacketCodec;
 import com.runecore.codec.PlayerUpdateCodec;
 import com.runecore.codec.ProtocolCodec;
 import com.runecore.env.groovy.GroovyEngine;
@@ -31,6 +31,11 @@ public class Context {
      * The PlayerUpdateCodec
      */
     private PlayerUpdateCodec playerUpdateCodec;
+    
+    /**
+     * An array of PacketCodecs
+     */
+    private PacketCodec[] packetCodecs;
     
     /**
      * The instance of the GroovyEngine
@@ -65,13 +70,17 @@ public class Context {
      */
     public void configure() throws Exception {
 	LOGGER.info("Configuring context with codec "+getCodec().getClass().getName());
+	packetCodecs = new PacketCodec[255];
 	RegionData.init();
-	CacheConstants.init();
 	setLoginProcessor(new LoginProcessor());
 	new Thread(getLoginProcessor()).start();
 	setGroovyEngine(new GroovyEngine());
 	getCodec().init(this);
 	getGroovyEngine().init(this);
+    }
+    
+    public void register(int index, PacketCodec codec) {
+	packetCodecs[index] = codec;
     }
     
     public static Context get() {
@@ -120,6 +129,14 @@ public class Context {
 
     public void setPlayerUpdateCodec(PlayerUpdateCodec playerUpdateCodec) {
 	this.playerUpdateCodec = playerUpdateCodec;
+    }
+
+    public PacketCodec[] getPacketCodecs() {
+	return packetCodecs;
+    }
+
+    public void setPacketCodecs(PacketCodec[] packetCodecs) {
+	this.packetCodecs = packetCodecs;
     }
 
 }

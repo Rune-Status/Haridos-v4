@@ -21,5 +21,6 @@ public interface ActionSender {
     public void sendMapRegion(Player player, boolean login);
     public void refreshGameInterfaces(Player player);
     public void refreshAccessMasks(Player player);
+    public void sendPlayerOption(SendPlayerOptionEvent event);
 
 }

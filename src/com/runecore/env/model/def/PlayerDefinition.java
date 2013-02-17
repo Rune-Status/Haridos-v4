@@ -1,5 +1,7 @@
 package com.runecore.env.model.def;
 
+import com.runecore.util.Misc;
+
 /**
  * PlayerDefinition.java
  * @author Harry Andreas<harry@runecore.org>
@@ -11,7 +13,7 @@ public class PlayerDefinition implements EntityDefinition {
     private final int combatLevel;
     
     public PlayerDefinition(String name, int combatLevel) {
-	this.name = name;
+	this.name = Misc.capitalize(name);
 	this.combatLevel = combatLevel;
     }
 
@@ -23,6 +25,11 @@ public class PlayerDefinition implements EntityDefinition {
     @Override
     public int getCombatLevel() {
 	return combatLevel;
+    }
+    
+    @Override
+    public int getSize() {
+	return 1;
     }
 
 }

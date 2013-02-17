@@ -9,5 +9,6 @@ public interface EntityDefinition {
     
     public String getName();
     public int getCombatLevel();
+    public int getSize();
 
 }

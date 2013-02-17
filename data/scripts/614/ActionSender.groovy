@@ -1,7 +1,6 @@
-import java.awt.GraphicsConfiguration.DefaultBufferCapabilities;
-
 import com.runecore.codec.event.RefreshLevelEvent;
 import com.runecore.codec.event.SendMessageEvent;
+import com.runecore.codec.event.SendPlayerOptionEvent;
 import com.runecore.codec.event.SendSettingEvent;
 import com.runecore.codec.event.SendSettingEvent.SettingType;
 
@@ -43,9 +42,22 @@ class ActionSender implements GroovyScript, ActionSender {
 	sendSetting(new SendSettingEvent(player, 234, 0, SettingType.B));
 	sendSetting(new SendSettingEvent(player, 695, 0, SettingType.B));
 	sendSetting(new SendSettingEvent(player, 768, 0, SettingType.B));
+	sendPlayerOption(new SendPlayerOptionEvent(player, "Attack", 1, true));
+	sendPlayerOption(new SendPlayerOptionEvent(player, "Follow", 2, false));
+	sendPlayerOption(new SendPlayerOptionEvent(player, "Trade with", 3, false));
 	sendMessage(new SendMessageEvent(player, "Welcome to DeadlyPKers v3."));
 	player.getFlagManager().flag(UpdateFlag.APPERANCE);
 	player.getSkills().refresh();
+    }
+    
+    @Override
+    public void sendPlayerOption(SendPlayerOptionEvent event) {
+	def builder = new MessageBuilder(20, PacketType.VAR_BYTE);
+	builder.writeByte(event.getSlot());
+	builder.writeLEShortA(65535);
+	builder.writeString(event.getOption());
+	builder.writeByte(event.isPriority() ? 1 : 0);
+	event.getPlayer().getSession().write(builder.toMessage());
     }
     
     @Override
@@ -194,7 +206,16 @@ class ActionSender implements GroovyScript, ActionSender {
 	    for (int index = 1; index < 2048; index++) {
 		if (index == playerIndex)
 		    continue;
-		builder.writeBits(18, 0);
+		Player other = World.get().getPlayers().get(index);
+		if (other == null) {
+		   builder.writeBits(18, 0);
+		   continue;
+		}
+		if (!player.getLocation().withinDistance(other.getLocation(), 16)) {
+		    builder.writeBits(18, 0);
+		    continue;
+		}
+		builder.writeBits(18, other.getLocation().get18BitsHash());
 	    }
 	    builder.finishBitAccess();
 	}
@@ -221,11 +242,9 @@ class ActionSender implements GroovyScript, ActionSender {
 		}
 	    }
 	}
+	player.getFlagManager().setLastKnownRegion(Location.locate(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()));
+	player.getFlagManager().setMapRegionChanged(false);
 	player.getSession().write(builder.toMessage());
-	for(short i : list) {
-	    int[] key = RegionData.get(i);
-	    LandscapeParser.parseLandscape(i, key);
-	}
     }
     
     @Override

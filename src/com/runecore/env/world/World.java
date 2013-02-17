@@ -4,9 +4,11 @@ import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.runecore.codec.PacketCodec;
 import com.runecore.env.Context;
 import com.runecore.env.model.EntityList;
 import com.runecore.env.model.player.Player;
+import com.runecore.network.io.Message;
 
 /**
  * World.java
@@ -29,7 +31,7 @@ public class World implements Runnable {
      * Construct the world
      */
     private World() {
-	players = new EntityList<Player>(2000);
+	players = new EntityList<Player>(2048);
 	Executors.newScheduledThreadPool(1).scheduleAtFixedRate(this, 600, 600, TimeUnit.MILLISECONDS);
     }
     
@@ -59,8 +61,23 @@ public class World implements Runnable {
 		continue;
 	    }
 	    if(!player.getSession().getChannel().isConnected()) {
+		player.getSession().getQueuedPackets().clear();
 		players.remove();
 		continue;
+	    }
+	}
+	players = getPlayers().iterator();
+	while(players.hasNext()) {
+	    Player player = players.next();
+	    if(!player.getSession().getQueuedPackets().isEmpty()) {
+		Message packet = null;
+		while((packet = player.getSession().getQueuedPackets().poll()) != null) {
+		    int opcode = packet.getOpcode();
+		    PacketCodec codec = Context.get().getPacketCodecs()[opcode];
+		    if(codec != null) {
+			codec.execute(player, packet);
+		    }
+		}
 	    }
 	}
     }

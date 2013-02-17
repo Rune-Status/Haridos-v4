@@ -1,5 +1,8 @@
 package com.runecore.env.model.player;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.runecore.env.model.Entity;
 import com.runecore.env.model.def.PlayerDefinition;
 import com.runecore.network.GameSession;
@@ -19,6 +22,8 @@ public class Player extends Entity {
     private final GameSession session;
     private final Skills skills;
     private final Looks looks;
+    private final List<Player> localPlayers;
+    private final boolean[] playerExists = new boolean[2048];
     
     /**
      * Construct the Player instance
@@ -31,11 +36,12 @@ public class Player extends Entity {
 	this.session.setPlayer(this);
 	this.skills = new Skills(this);
 	this.looks = new Looks();
+	this.localPlayers = new LinkedList<Player>();
     }
     
     @Override
     public void tick() {
-	
+	getWalking().getNextEntityMovement();
     }
     
     @Override
@@ -53,6 +59,14 @@ public class Player extends Entity {
 
     public Looks getLooks() {
 	return looks;
+    }
+
+    public List<Player> getLocalPlayers() {
+	return localPlayers;
+    }
+
+    public boolean[] getPlayerExists() {
+	return playerExists;
     }
 
 }

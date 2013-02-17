@@ -1,9 +1,13 @@
 package com.runecore.network;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 
 import com.runecore.env.model.player.Player;
+import com.runecore.network.io.Message;
 
 /**
  * GameSession.java
@@ -19,6 +23,7 @@ public class GameSession {
     private Player player;
     private int displayMode;
     private String macAddress, ipAddress;
+    private final Queue<Message> queuedPackets = new LinkedList<Message>();
     
     /**
      * Construct the GameSession
@@ -27,6 +32,12 @@ public class GameSession {
     public GameSession(Channel channel) {
 	this.channel = channel;
 	setIpAddress(channel.getRemoteAddress().toString().replaceAll("/", "").split(":")[0]);
+    }
+    
+    public void queue(Message message) {
+	synchronized(queuedPackets) {
+	    queuedPackets.offer(message);
+	}
     }
     
     /**
@@ -72,6 +83,10 @@ public class GameSession {
     
     public void setIpAddress(String ipAddress) {
 	this.ipAddress = ipAddress;
+    }
+
+    public synchronized Queue<Message> getQueuedPackets() {
+	return queuedPackets;
     }
 
 }
