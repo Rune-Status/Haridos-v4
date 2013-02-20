@@ -7,6 +7,8 @@ package com.runecore.env.model.flag;
  */
 public enum UpdateFlag {
     
-    APPERANCE;
+    APPERANCE,
+    ANIMATION,
+    GRAPHICS;
 
 }

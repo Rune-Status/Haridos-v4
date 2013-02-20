@@ -1,6 +1,11 @@
 package com.runecore.env.groovy;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -38,9 +43,19 @@ public class GroovyEngine {
      */
     public GroovyEngine() {
 	try {
-	    engine = new GroovyScriptEngine(new String[] { "./data/scripts/", "./data/scripts/614/", "./data/scripts/614/packet/"});
+	    engine = new GroovyScriptEngine(Context.get().getCodec().scriptPaths());
+	    
 	    ImportCustomizer imports = new ImportCustomizer();
+	    if(!new File("./data/api.txt").exists()) {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./data/api.txt")));
+		generateImports(new File("bin"), new File("bin"), writer);
+		writer.flush();
+		writer.close();
+	    }
+	    loadImports(new File("./data/api.txt"), imports);
+	    
 	    imports.addImport("PlayerUpdateCodec", "com.runecore.codec.PlayerUpdateCodec");
+	    imports.addImport("WidgetAdapter", "com.runecore.env.widget.WidgetAdapter");
 	    imports.addImport("PacketCodec", "com.runecore.codec.PacketCodec");
 	    imports.addImport("Walking", "com.runecore.env.model.Walking");
 	    imports.addImport("World", "com.runecore.env.world.World");
@@ -65,11 +80,39 @@ public class GroovyEngine {
 	    imports.addImport("GroovyScript", "com.runecore.env.groovy.GroovyScript");
 	    imports.addImport("Context", "com.runecore.env.Context");
 	    imports.addImport("NetworkContext", "com.runecore.network.NetworkContext");
+	    
 	    engine.getConfig().addCompilationCustomizers(imports);
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
     }
+    
+    private void loadImports(File file, ImportCustomizer imports)
+	    throws IOException {
+	BufferedReader reader = new BufferedReader(new FileReader(file));
+	String name;
+	while ((name = reader.readLine()) != null) {
+	    imports.addImport(
+		    name.substring(name.lastIndexOf('.') + 1, name.length()),
+		    name);
+	}
+	reader.close();
+    }
+    
+    private static void generateImports(File mainDir, File dir, BufferedWriter writer) throws IOException {
+	for (File file : dir.listFiles()) {
+	    if (file.isDirectory()) {
+		generateImports(mainDir, file, writer);
+		continue;
+	    }
+	    if (file.getName().endsWith(".class") && !file.getName().contains("$")) {
+		String name = file.getPath().replace(File.separatorChar, '/').replace(mainDir.getPath() + "/", "").replace(".class", "").replace('/', '.');
+		writer.write(name);
+		writer.newLine();
+	    }
+	}
+    }
+
     
     /**
      * Starts the Engine
@@ -77,20 +120,17 @@ public class GroovyEngine {
      */
     public void init(Context context) throws Exception {
 	logger.info("Compiling scripts...");
-	for(File f : new File("./data/scripts/").listFiles()) {
-	    if(f.isDirectory())
-		continue;
-	    String scriptName = f.getName().replaceAll(".groovy", "");
-	    GroovyScript script = initScript(scriptName);
-	    script.init(context);
+	String[] paths = context.getCodec().scriptPaths();
+	for (String s : paths) {
+	    for (File f : new File(s).listFiles()) {
+		if (f.isDirectory())
+		    continue;
+		String scriptName = f.getName().replaceAll(".groovy", "");
+		GroovyScript script = initScript(scriptName);
+		script.init(context);
+	    }
 	}
-	for(File f : new File("./data/scripts/614/packet/").listFiles()) {
-	    if(f.isDirectory())
-		continue;
-	    String scriptName = f.getName().replaceAll(".groovy", "");
-	    GroovyScript script = initScript(scriptName);
-	    script.init(context);
-	}
+	
     }
     
     @SuppressWarnings("unchecked")

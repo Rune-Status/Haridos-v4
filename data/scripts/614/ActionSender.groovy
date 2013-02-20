@@ -48,6 +48,14 @@ class ActionSender implements GroovyScript, ActionSender {
 	sendMessage(new SendMessageEvent(player, "Welcome to DeadlyPKers v3."));
 	player.getFlagManager().flag(UpdateFlag.APPERANCE);
 	player.getSkills().refresh();
+	Inventory.init(player);
+	Equipment.init(player);
+    }
+    
+    @Override
+    public void sendLogout(Player player) {
+	def builder = new MessageBuilder(38);
+	player.getSession().write(builder.toMessage());
     }
     
     @Override
@@ -298,6 +306,30 @@ class ActionSender implements GroovyScript, ActionSender {
     	builder.writeLEShortA(frameIndex);
 	builder.writeShortA(event.getSet());
 	builder.writeInt2(event.getInter2() << 16 | event.getChild2());
+	event.getPlayer().getSession().write(builder.toMessage());
+    }
+    
+    @Override
+    public void sendItemContainer(SendItemContainerEvent event) {
+	def builder = new MessageBuilder(56, PacketType.VAR_SHORT);
+	builder.writeShort(event.getType());
+	builder.writeByte(event.isSplit() ? 1 : 0);
+	builder.writeShort(event.getContainer().capacity());
+	def container = event.getContainer();
+	for(int i = 0; i < container.capacity(); i++) {
+	    def item = container.get(i);
+	    int id = 0;
+	    int am = 0;
+	    if(item != null) {
+	    	id = item.getId() + 1;
+		am = item.getAmount();
+	    }
+	    builder.writeByteA(am > 254 ? 0xff : am);
+	    if(am > 0xfe) {
+		builder.writeInt(am);
+	    }
+	    builder.writeShort(id);
+	}
 	event.getPlayer().getSession().write(builder.toMessage());
     }
     

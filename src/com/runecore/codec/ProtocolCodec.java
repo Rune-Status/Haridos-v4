@@ -13,5 +13,6 @@ public interface ProtocolCodec {
     
     public void init(Context context);
     public void setup(ChannelPipeline pipeline);
+    public String[] scriptPaths();
 
 }

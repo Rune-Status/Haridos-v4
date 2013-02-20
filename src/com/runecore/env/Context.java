@@ -1,13 +1,22 @@
 package com.runecore.env;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.runecore.codec.ActionSender;
 import com.runecore.codec.PacketCodec;
 import com.runecore.codec.PlayerUpdateCodec;
 import com.runecore.codec.ProtocolCodec;
+import com.runecore.env.core.GameEngine;
 import com.runecore.env.groovy.GroovyEngine;
 import com.runecore.env.login.LoginProcessor;
+import com.runecore.env.model.def.ItemDefinition;
+import com.runecore.env.model.map.ObjectAdapter;
+import com.runecore.env.widget.WidgetAdapter;
+import com.runecore.env.widget.WidgetAdapterRepository;
 import com.runecore.util.RegionData;
 
 /**
@@ -36,6 +45,21 @@ public class Context {
      * An array of PacketCodecs
      */
     private PacketCodec[] packetCodecs;
+    
+    /**
+     * A map of WidgetAdapterRepositories
+     */
+    private final Map<Integer, WidgetAdapterRepository> widgetAdapters = new HashMap<Integer, WidgetAdapterRepository>();
+    
+    /**
+     * A List of ObjectAdapters
+     */
+    private final List<ObjectAdapter> objectAdapters = new LinkedList<ObjectAdapter>();
+    
+    /**
+     * The GameEngine for this Context
+     */
+    private final GameEngine gameEngine = new GameEngine();
     
     /**
      * The instance of the GroovyEngine
@@ -72,6 +96,7 @@ public class Context {
 	LOGGER.info("Configuring context with codec "+getCodec().getClass().getName());
 	packetCodecs = new PacketCodec[255];
 	RegionData.init();
+	ItemDefinition.init();
 	setLoginProcessor(new LoginProcessor());
 	new Thread(getLoginProcessor()).start();
 	setGroovyEngine(new GroovyEngine());
@@ -79,8 +104,21 @@ public class Context {
 	getGroovyEngine().init(this);
     }
     
+    public void register(ObjectAdapter adapter) {
+	getObjectAdapters().add(adapter);
+    }
+    
     public void register(int index, PacketCodec codec) {
 	packetCodecs[index] = codec;
+    }
+    
+    public void register(int index, WidgetAdapter adapter) {
+	WidgetAdapterRepository repo = getWidgetAdapters().get(index);
+	if(repo == null) {
+	    repo = new WidgetAdapterRepository();
+	    getWidgetAdapters().put(index, repo);
+	}
+	repo.register(adapter);
     }
     
     public static Context get() {
@@ -137,6 +175,18 @@ public class Context {
 
     public void setPacketCodecs(PacketCodec[] packetCodecs) {
 	this.packetCodecs = packetCodecs;
+    }
+
+    public List<ObjectAdapter> getObjectAdapters() {
+	return objectAdapters;
+    }
+
+    public GameEngine getGameEngine() {
+	return gameEngine;
+    }
+
+    public Map<Integer, WidgetAdapterRepository> getWidgetAdapters() {
+	return widgetAdapters;
     }
 
 }

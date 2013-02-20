@@ -11,6 +11,7 @@ import com.runecore.env.model.player.Player;
 public interface ActionSender {
     
     public void sendLogin(Player player);
+    public void sendLogout(Player player);
     public void sendSetting(SendSettingEvent event);
     public void sendMessage(SendMessageEvent event);
     public void sendAccessMask(SendAccessMaskEvent event);
@@ -22,5 +23,6 @@ public interface ActionSender {
     public void refreshGameInterfaces(Player player);
     public void refreshAccessMasks(Player player);
     public void sendPlayerOption(SendPlayerOptionEvent event);
+    public void sendItemContainer(SendItemContainerEvent event);
 
 }

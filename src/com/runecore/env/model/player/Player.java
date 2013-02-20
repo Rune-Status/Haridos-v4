@@ -3,8 +3,10 @@ package com.runecore.env.model.player;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.runecore.env.model.Entity;
+import com.runecore.env.model.Animable;
+import com.runecore.env.model.container.Container;
 import com.runecore.env.model.def.PlayerDefinition;
+import com.runecore.env.model.item.Item;
 import com.runecore.network.GameSession;
 
 /**
@@ -12,7 +14,7 @@ import com.runecore.network.GameSession;
  * @author Harry Andreas<harry@runecore.org>
  * Feb 10, 2013
  */
-public class Player extends Entity {
+public class Player extends Animable {
 
     /**
      * Variables for the Player
@@ -22,6 +24,8 @@ public class Player extends Entity {
     private final GameSession session;
     private final Skills skills;
     private final Looks looks;
+    private Container inventory = new Container(Container.Type.STANDARD, 28);
+    private Container equipment = new Container(Container.Type.STANDARD, 15);
     private final List<Player> localPlayers;
     private final boolean[] playerExists = new boolean[2048];
     
@@ -37,6 +41,28 @@ public class Player extends Entity {
 	this.skills = new Skills(this);
 	this.looks = new Looks();
 	this.localPlayers = new LinkedList<Player>();
+    }
+    
+    public Container get(String container) {
+	switch(container) {
+	case "i":
+	case "inv":
+	case "inventory":
+	    return inventory;
+	case "e":
+	case "equip":
+	case "equipment":
+	    return equipment;
+	}
+	return null;
+    }
+    
+    public int getRenderId() {
+	Item item = get("e").get(3);
+	if(item == null) {
+	    return 1426;
+	}
+	return item.getDefinition().getRenderAnimation();
     }
     
     @Override

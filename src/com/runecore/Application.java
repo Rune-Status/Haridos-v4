@@ -12,17 +12,20 @@ import com.runecore.env.Context;
  */
 public class Application {
 
-	private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
+    public static final boolean DEBUG = Boolean.FALSE;
 
-	/**
-	 * Invoked on execution of the Application
-	 * @param args The arguments for the application
-	 */
-	public static void main(String[] args) throws Exception {
-		LOGGER.info("Starting RuneCore v4...");
-		Context.set(new Context(new Protocol614()));
-		Context.get().configure();
-		LOGGER.info("Context configuration completed, server is now online");
-	}
+    /**
+     * Invoked on execution of the Application
+     * @param args The arguments for the application
+     */
+    public static void main(String[] args) throws Exception {
+	LOGGER.info("Starting RuneCore v4...");
+	Context.set(new Context(new Protocol614()));
+	Context.get().configure();
+	LOGGER.info("Context configuration completed, server is now online");
+	Thread.currentThread().setName("GameEngine");
+	Context.get().getGameEngine().run();
+    }
 
 }

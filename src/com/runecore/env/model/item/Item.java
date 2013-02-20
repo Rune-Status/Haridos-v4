@@ -1,5 +1,7 @@
 package com.runecore.env.model.item;
 
+import com.runecore.env.model.def.ItemDefinition;
+
 /**
  * Item.java
  * 
@@ -60,6 +62,10 @@ public class Item {
      */
     public int getAmount() {
 	return itemAmount;
+    }
+    
+    public ItemDefinition getDefinition() {
+	return ItemDefinition.forId(getId());
     }
 
 }

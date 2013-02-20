@@ -10,7 +10,6 @@ import com.runecore.codec.ProtocolCodec;
 import com.runecore.codec.codec614.net.EventHandler;
 import com.runecore.codec.codec614.net.HandshakeDecoder;
 import com.runecore.env.Context;
-import com.runecore.env.groovy.GroovyScript;
 import com.runecore.network.NetworkEncoder;
 
 /**
@@ -30,11 +29,13 @@ public class Protocol614 implements ProtocolCodec {
      */
     public void init(Context context) {
 	Cache.init();
+	/*
 	String[] scripts = new String[] { "ActionSender", "GPI" };
 	for(String s : scripts) {
 	    GroovyScript script = context.getGroovyEngine().initScript(s);
 	    script.init(context);
 	}
+	*/
 	js5Service = Executors.newFixedThreadPool(5);
     }
     
@@ -46,6 +47,17 @@ public class Protocol614 implements ProtocolCodec {
 	pipeline.addLast("decoder", new HandshakeDecoder());
 	pipeline.addLast("encoder", new NetworkEncoder());
 	pipeline.addLast("handler", new EventHandler(js5Service));
+    }
+
+    /* (non-Javadoc)
+     * @see com.runecore.codec.ProtocolCodec#scriptPaths()
+     */
+    @Override
+    public String[] scriptPaths() {
+	return new String[] {
+		"./data/scripts/", "./data/scripts/614/", "./data/scripts/614/packet/", "./data/scripts/614/widget/",
+		"./data/scripts/614/objects/"
+	};
     }
 
 }

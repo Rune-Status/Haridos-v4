@@ -22,7 +22,7 @@ class GPI implements GroovyScript, PlayerUpdateCodec {
 	Iterator<Player> it$ = player.getLocalPlayers().iterator();
 	while(it$.hasNext()) {
 	    Player p = it$.next();
-	    if(p != null && p.getLocation().withinDistance(player.getLocation(), 16)) {
+	    if(p != null && p.getLocation().withinDistance(player.getLocation(), 16) && World.get().getPlayers().contains(p)) {
 		updatePlayerBlock(block, p, false);
 		if(p.getFlagManager().updateNeeded()) {
 		    packet.writeBits(1, 1);
@@ -112,11 +112,17 @@ class GPI implements GroovyScript, PlayerUpdateCodec {
 	    return;
 	}
 	int maskData = 0;
-	if(force || player.getFlagManager().flagged(UpdateFlag.APPERANCE)) {
-	    maskData |= 0x20;
+	if (player.getFlagManager().flagged(UpdateFlag.ANIMATION)) {
+	    maskData |= 0x80;
+	}
+	if(player.getFlagManager().flagged(UpdateFlag.GRAPHICS)) {
+	    maskData |= 0x1000;
 	}
 	if(player.getWalking().getWalkDir() != -1 || player.getWalking().getRunDir() != -1) {
 	    maskData |= 0x10;
+	}
+	if(force || player.getFlagManager().flagged(UpdateFlag.APPERANCE)) {
+	    maskData |= 0x20;
 	}
 	if (maskData > 128)
 	maskData |= 0x1;
@@ -127,13 +133,22 @@ class GPI implements GroovyScript, PlayerUpdateCodec {
 	    block.writeByte(maskData >> 8);
 	if (maskData > 32768)
 	   block.writeByte(maskData >> 16);
+	if (player.getFlagManager().flagged(UpdateFlag.ANIMATION)) {
+	    block.writeShortA(player.getFlagManager().getAnimation().getId());
+	    block.writeByteA(player.getFlagManager().getAnimation().getDelay());
+	}
+	if(player.getFlagManager().flagged(UpdateFlag.GRAPHICS)) {
+	    block.writeShortA(player.getFlagManager().getGraphic().getId());
+	    block.writeInt(player.getFlagManager().getGraphic().getDelay());
+	    block.writeByte(player.getFlagManager().getGraphic().getHeight());
+	}
+	if(player.getWalking().getWalkDir() != -1 || player.getWalking().getRunDir() != -1) {
+	    block.writeByteC(player.getWalking().getWalkDir() != -1 ? 1 : 2);
+	}
 	if(force || player.getFlagManager().flagged(UpdateFlag.APPERANCE)) {
 	    def app = player.getLooks().generate(player);
 	    block.writeByteS(app.position());
 	    block.addBytes128(app.getBuffer());
-	}
-	if(player.getWalking().getWalkDir() != -1 || player.getWalking().getRunDir() != -1) {
-	    block.writeByteC(player.getWalking().getWalkDir() != -1 ? 1 : 2);
 	}
     }
     

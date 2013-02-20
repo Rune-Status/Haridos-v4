@@ -25,6 +25,8 @@ public class FlagManager {
      */
     private final Entity player;
     private final BitSet bitSet = new BitSet();
+    private Animation animation;
+    private Graphic graphic;
     private boolean mapRegionChanged = false;
     private Location teleportLocation;
     private Location lastKnownRegion;
@@ -59,6 +61,8 @@ public class FlagManager {
      */
     public void reset() {
 	bitSet.clear();
+	setAnimation(null);
+	setGraphic(null);
 	setMapRegionChanged(false);
     }
     
@@ -88,6 +92,22 @@ public class FlagManager {
 
     public Entity entity() {
 	return player;
+    }
+
+    public Animation getAnimation() {
+	return animation;
+    }
+
+    public void setAnimation(Animation animation) {
+	this.animation = animation;
+    }
+
+    public Graphic getGraphic() {
+	return graphic;
+    }
+
+    public void setGraphic(Graphic graphic) {
+	this.graphic = graphic;
     }
 
 }
