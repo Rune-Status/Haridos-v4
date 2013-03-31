@@ -87,6 +87,9 @@ public class GroovyEngine {
 	}
     }
     
+    /**
+     * Credits to Laz + Maxi
+     * /
     private void loadImports(File file, ImportCustomizer imports)
 	    throws IOException {
 	BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -99,6 +102,9 @@ public class GroovyEngine {
 	reader.close();
     }
     
+    /**
+     * Credits to Laz + Maxi
+     * /
     private static void generateImports(File mainDir, File dir, BufferedWriter writer) throws IOException {
 	for (File file : dir.listFiles()) {
 	    if (file.isDirectory()) {
